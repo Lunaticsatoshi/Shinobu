@@ -41,6 +41,8 @@ class Bot(BotBase):
             embed = Embed(title="Ara Ara!!", description="Shinobu is now here", colour=0xFF0000, timestamp=datetime.utcnow())
             embed.add_field(name="Name", value="Value",inline=False)
             embed.set_author(name="LunaticSatoshi", icon_url=self.guild.icon_url)
+            embed.set_thumbnail(url=self.guild.icon_url)
+            embed.set_image(url=self.guild.icon_url)
             embed.set_footer(text="This is a footer")
             await channel.send(embed=embed)
         else:
