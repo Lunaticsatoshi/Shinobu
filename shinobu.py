@@ -1,9 +1,8 @@
-import discord
-from discord.ext import commands
+from lib.bot import bot
 
+VERSION = "0.0.1"
 
-
-shinobu = commands.Bot(command_prefix='$')
+""" shinobu = commands.Bot(command_prefix='$')
 
 @shinobu.event
 async def on_ready():
@@ -24,6 +23,7 @@ async def clear(ctx, amount=10):
     messages = []
     async for message in channel.history():
         messages.append(message)
-    await channel.delete_messages(messages) 
+    await channel.delete_messages(messages) """ 
 
-shinobu.run(TOKEN)
+""" shinobu.run(TOKEN) """
+bot.run(VERSION)

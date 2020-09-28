@@ -2,3 +2,5 @@ loli/
 
 *.db
 *.db-journal
+
+lib/bot/token
