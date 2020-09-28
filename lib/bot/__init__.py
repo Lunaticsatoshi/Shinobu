@@ -1,5 +1,7 @@
 from discord.ext.commands import Bot as BotBase
+from discord import Embed
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from datetime import datetime
 
 PREFIX = "!"
 OWNER_IDS = [572353145963806721]
@@ -33,6 +35,14 @@ class Bot(BotBase):
             self.ready = True
             self.guild = self.get_guild(710051662563115049)
             print("Shinobu ready")
+            channel = self.get_channel(710051662563115052)
+            await channel.send("Now Online")
+
+            embed = Embed(title="Ara Ara!!", description="Shinobu is now here", colour=0xFF0000, timestamp=datetime.utcnow())
+            embed.add_field(name="Name", value="Value",inline=False)
+            embed.set_author(name="LunaticSatoshi", icon_url=self.guild.icon_url)
+            embed.set_footer(text="This is a footer")
+            await channel.send(embed=embed)
         else:
             print("Shinobu reconnected")
 
