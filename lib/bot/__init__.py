@@ -2,7 +2,9 @@ from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound
 from discord import Embed
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from datetime import datetime
+from ..db import db
 
 PREFIX = "!"
 OWNER_IDS = [572353145963806721]
@@ -13,6 +15,7 @@ class Bot(BotBase):
         self.ready = False
         self.guild = None
         self.scheduler = AsyncIOScheduler()
+        db.autosave(self.scheduler)
 
         super().__init__(command_prefix=PREFIX, OWNER_ID=OWNER_IDS)
 
@@ -46,21 +49,27 @@ class Bot(BotBase):
         else:
             raise exc
 
+    async def print_message(self):
+        channel = self.get_channel(762650848294731817)
+        channel.send("Set Of Rules")
+
     async def on_ready(self):
         if not self.ready:
             self.ready = True
             self.guild = self.get_guild(710051662563115049)
+            self.scheduler.start()
+            self.scheduler.add_job(self.print_message, CronTrigger(day_of_week=0, hour=12))
             print("Shinobu ready")
             channel = self.get_channel(710051662563115052)
             await channel.send("Now Online")
 
-            embed = Embed(title="Ara Ara!!", description="Shinobu is now here", colour=0xFF0000, timestamp=datetime.utcnow())
-            embed.add_field(name="Name", value="Value",inline=False)
-            embed.set_author(name="LunaticSatoshi", icon_url=self.guild.icon_url)
-            embed.set_thumbnail(url=self.guild.icon_url)
-            embed.set_image(url=self.guild.icon_url)
-            embed.set_footer(text="This is a footer")
-            await channel.send(embed=embed)
+            # embed = Embed(title="Ara Ara!!", description="Shinobu is now here", colour=0xFF0000, timestamp=datetime.utcnow())
+            # embed.add_field(name="Name", value="Value",inline=False)
+            # embed.set_author(name="LunaticSatoshi", icon_url=self.guild.icon_url)
+            # embed.set_thumbnail(url=self.guild.icon_url)
+            # embed.set_image(url=self.guild.icon_url)
+            # embed.set_footer(text="This is a footer")
+            # await channel.send(embed=embed)
         else:
             print("Shinobu reconnected")
 
