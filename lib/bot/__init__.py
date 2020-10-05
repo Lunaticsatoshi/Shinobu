@@ -1,4 +1,5 @@
 from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import CommandNotFound
 from discord import Embed
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
@@ -29,6 +30,21 @@ class Bot(BotBase):
 
     async def on_disconnect(self):
         print("Ara Ara Sionara!")
+
+    async def on_error(self, err, *args, **kwargs):
+        if err == 'on_command_error':
+            await args[0].send("Somthing went wrong.")
+        channel = self.get_channel(710051662563115052)
+        await channel.send("An error Occurrred")
+        raise 
+
+    async def on_command_error(self, ctx, exc):
+        if isinstance(exc, CommandNotFound):
+            pass
+        elif hasattr(exc, "original"):
+            raise exc.original
+        else:
+            raise exc
 
     async def on_ready(self):
         if not self.ready:
