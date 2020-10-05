@@ -1,6 +1,6 @@
 from lib.bot import bot
 
-VERSION = "0.0.4"
+VERSION = "0.0.6"
 
 """ shinobu = commands.Bot(command_prefix='$')
 
