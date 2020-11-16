@@ -1,6 +1,7 @@
 from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import Context
 from discord.ext.commands import CommandNotFound
-from discord import Embed
+from discord import Embed, File
 from glob import glob
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -49,6 +50,14 @@ class Bot(BotBase):
 
         print("Running Shinobu...")
         super().run(self.TOKEN, reconnect=True)
+
+    async def process_commands(self,message):
+        ctx = await self.get_context(message, cls=Context)
+        if ctx.command is not None and ctx.guild is not None:
+            if self.ready:
+                await self.invoke(ctx)
+            else:
+                await self.send("Wait for Oneechan to be ready!! ")
     
     async def on_connect(self):
         print("Ara Ara!")
@@ -66,8 +75,8 @@ class Bot(BotBase):
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
             pass
-        elif hasattr(exc, "original"):
-            raise exc.original
+        # elif hasattr(exc, "original"):
+        #     raise exc.original
         else:
             raise exc
 
@@ -97,6 +106,7 @@ class Bot(BotBase):
             print("Shinobu reconnected")
 
     async def on_message(self, message):
-        pass
+        if not message.author.bot:
+            await self.process_commands(message)
 
 bot = Bot()
