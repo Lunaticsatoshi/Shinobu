@@ -1,6 +1,8 @@
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import Context
-from discord.ext.commands import CommandNotFound
+from discord.ext.commands import CommandNotFound, BadArgument
+from discord.ext.commands import MissingRequiredArgument, MissingRole, MissingPermissions
+from discord.errors import Forbidden
 from discord import Embed, File
 from glob import glob
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,6 +14,7 @@ from ..db import db
 PREFIX = "!"
 OWNER_IDS = [572353145963806721]
 COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+IGNORE_EXCEPTIONS = [CommandNotFound, BadArgument]
 
 class Ready(object):
     def __init__(self):
@@ -73,10 +76,24 @@ class Bot(BotBase):
         raise 
 
     async def on_command_error(self, ctx, exc):
-        if isinstance(exc, CommandNotFound):
+        if any([isinstance(exc, error) for error in IGNORE_EXCEPTIONS]):
             pass
+
+        elif isinstance(exc, MissingRequiredArgument):
+            await ctx.send("One or More Argument missing in the command")
         # elif hasattr(exc, "original"):
         #     raise exc.original
+        elif isinstance(exc, MissingPermissions):
+            await ctx.send("You are not allowed to Use This command")
+
+        elif isinstance(exc, MissingRole):
+            await ctx.send("You do not have the necessary role to use this command")
+        
+        elif hasattr(exc, "original"):
+            if isinstance(exc.original, Forbidden):
+                await ctx.send("Shinobu doesn't have permission to do that!!")
+            else:
+                raise exc.original
         else:
             raise exc
 
