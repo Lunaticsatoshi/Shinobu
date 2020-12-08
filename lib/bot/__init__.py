@@ -2,7 +2,7 @@ from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import Context
 from discord.ext.commands import CommandNotFound, BadArgument
 from discord.ext.commands import MissingRequiredArgument, MissingRole, MissingPermissions
-from discord.errors import Forbidden
+from discord.errors import Forbidden, HTTPException
 from discord import Embed, File
 from glob import glob
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -92,6 +92,8 @@ class Bot(BotBase):
         elif hasattr(exc, "original"):
             if isinstance(exc.original, Forbidden):
                 await ctx.send("Shinobu doesn't have permission to do that!!")
+            elif isinstance(exc.original, HTTPException):
+                await ctx.send("Unable To send Messages")
             else:
                 raise exc.original
         else:
